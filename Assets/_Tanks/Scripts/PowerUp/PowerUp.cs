@@ -7,6 +7,7 @@ namespace Tanks.Complete
         public enum PowerUpType { Speed, DamageReduction, ShootingBonus, Healing, Invincibility, DamageMultiplier }
         [Tooltip("Select the kind of Power Up that you want.")]
         [SerializeField] private PowerUpType m_PowerUpType = PowerUpType.DamageReduction;
+        public PowerUpType Type => m_PowerUpType;
 
         [Tooltip("Particle to emit when this Power Up is collected.")]
         [SerializeField] private ParticleSystem m_CollectFX;

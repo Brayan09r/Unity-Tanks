@@ -29,6 +29,9 @@ namespace Tanks.Complete
         public float m_EndDelay = 3f;               // The delay between the end of RoundPlaying and RoundEnding phases.
         public CameraControl m_CameraControl;       // Reference to the CameraControl script for control during different phases.
 
+        public static GameManager Instance { get; private set; }
+        public static event System.Action<int> OnRoundStarted;
+
         [Header("Tanks Prefabs")]
         public GameObject m_Tank1Prefab;            // The Prefab used by the tank in Slot 1 of the Menu
         public GameObject m_Tank2Prefab;            // The Prefab used by the tank in Slot 2 of the Menu
@@ -52,6 +55,7 @@ namespace Tanks.Complete
 
         private void Start()
         {
+            Instance = this;
             m_CurrentState = GameState.MainMenu;
 
             // Find the text used to display game info. Need to look at inactive object too, as the Menu prefab (which contains it) may be
@@ -198,6 +202,7 @@ namespace Tanks.Complete
 
             // Increment the round number and display text showing the players what round it is.
             m_RoundNumber++;
+            OnRoundStarted?.Invoke(m_RoundNumber);
             m_TitleText.text = "<size=120%>RONDA " + m_RoundNumber + "</size>\n<size=60%><color=#FFD166>¡A COMBATIR!</color></size>";
 
             // Wait for the specified length of time until yielding control back to the game loop.

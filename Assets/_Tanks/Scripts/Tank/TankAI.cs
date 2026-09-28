@@ -12,12 +12,21 @@ namespace Tanks.Complete
     /// </summary>
     public class TankAI : MonoBehaviour
     {
-        // Possible state of the Computer controlled tank : either seeking itsd target or fleeing from it
+        // Possible state of the Computer controlled tank : seeking target, fleeing, or seeking survival powerups
         enum State
         {
             Seek,
-            Flee
+            Flee,
+            SeekPowerUp
         }
+
+        [Header("Survival Heuristics")]
+        [Tooltip("Health percentage threshold (0-1) below which the AI seeks PowerUps.")]
+        [Range(0.1f, 0.7f)]
+        [SerializeField] private float m_LowHealthThreshold = 0.40f;
+        private Transform m_CurrentPowerUpTarget = null;
+        private TankHealth m_Health;
+        private PowerUpDetector m_PowerUpDetector;
     
         private TankMovement m_Movement;                // Reference to the movement script
         private TankShooting m_Shooting;                // Reference to the shooting script
@@ -55,6 +64,8 @@ namespace Tanks.Complete
             
             m_Movement = GetComponent<TankMovement>();
             m_Shooting = GetComponent<TankShooting>();
+            m_Health = GetComponent<TankHealth>();
+            m_PowerUpDetector = GetComponent<PowerUpDetector>();
 
             // ensure that both movement and shooting script are set in "computer controlled" mode
             m_Movement.m_IsComputerControlled = true;
@@ -107,6 +118,9 @@ namespace Tanks.Complete
                 case State.Flee:
                     FleeUpdate();
                     break;
+                case State.SeekPowerUp:
+                    SeekPowerUpUpdate();
+                    break;
             }
         }
 
@@ -117,6 +131,18 @@ namespace Tanks.Complete
             // under 1s, this is visually not noticeable and a lot more efficient than trying to pathfinding 30+ time each second
             if (m_PathfindTimer > m_PathfindTime)
             {
+                // Check if low on health and should hunt for survival resources (healing/shields)
+                if (ShouldSeekPowerUp() && TryFindBestPowerUpPath(out NavMeshPath puPath, out Transform puTarget))
+                {
+                    m_PathfindTimer = 0;
+                    m_CurrentState = State.SeekPowerUp;
+                    m_CurrentPowerUpTarget = puTarget;
+                    m_CurrentPath = puPath;
+                    m_CurrentCorner = 1;
+                    m_IsMoving = true;
+                    return;
+                }
+
                 // reset the time since last pathfind
                 m_PathfindTimer = 0;
 
@@ -360,7 +386,12 @@ namespace Tanks.Complete
 
             //if we are not moving, we orient toward our target instead
             if (!m_IsMoving)
-                orientTarget = m_CurrentTarget.position;
+            {
+                if (m_CurrentTarget != null)
+                    orientTarget = m_CurrentTarget.position;
+                else if (m_CurrentPowerUpTarget != null)
+                    orientTarget = m_CurrentPowerUpTarget.position;
+            }
 
             Vector3 toOrientTarget = orientTarget - transform.position;
             toOrientTarget.y = 0;
@@ -404,5 +435,138 @@ namespace Tanks.Complete
 
             return dist;
         }
+
+        #region Power-Up Survival Heuristics (AI Extension)
+
+        private bool ShouldSeekPowerUp()
+        {
+            if (m_Health == null) return false;
+            if (m_PowerUpDetector != null && m_PowerUpDetector.m_HasActivePowerUp) return false;
+            return m_Health.HealthPercentage <= m_LowHealthThreshold;
+        }
+
+        private bool TryFindBestPowerUpPath(out NavMeshPath bestPath, out Transform bestTarget)
+        {
+            bestPath = null;
+            bestTarget = null;
+
+            PowerUp[] powerUps = FindObjectsByType<PowerUp>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            if (powerUps == null || powerUps.Length == 0) return false;
+
+            float shortestDistance = float.MaxValue;
+            NavMeshPath testPath = new NavMeshPath();
+
+            foreach (var pu in powerUps)
+            {
+                if (pu == null || !pu.gameObject.activeInHierarchy) continue;
+
+                if (NavMesh.CalculatePath(transform.position, pu.transform.position, ~0, testPath))
+                {
+                    float pathLen = GetPathLength(testPath);
+
+                    // Survival heuristic weighting: prioritize Healing (0.6x) and Shields (0.75x)
+                    if (pu.Type == PowerUp.PowerUpType.Healing)
+                        pathLen *= 0.6f;
+                    else if (pu.Type == PowerUp.PowerUpType.DamageReduction || pu.Type == PowerUp.PowerUpType.Invincibility)
+                        pathLen *= 0.75f;
+
+                    if (pathLen < shortestDistance)
+                    {
+                        shortestDistance = pathLen;
+                        bestPath = new NavMeshPath();
+                        NavMesh.CalculatePath(transform.position, pu.transform.position, ~0, bestPath);
+                        bestTarget = pu.transform;
+                    }
+                }
+            }
+
+            return bestTarget != null;
+        }
+
+        private void SeekPowerUpUpdate()
+        {
+            // 1. If target was consumed or destroyed, return to normal combat
+            if (m_CurrentPowerUpTarget == null || !m_CurrentPowerUpTarget.gameObject.activeInHierarchy)
+            {
+                m_CurrentPowerUpTarget = null;
+                m_CurrentState = State.Seek;
+                return;
+            }
+
+            // 2. If health has recovered or buff is active, return to normal combat
+            if (m_Health != null && m_Health.HealthPercentage >= 0.75f)
+            {
+                m_CurrentPowerUpTarget = null;
+                m_CurrentState = State.Seek;
+                return;
+            }
+
+            if (m_PowerUpDetector != null && m_PowerUpDetector.m_HasActivePowerUp)
+            {
+                m_CurrentPowerUpTarget = null;
+                m_CurrentState = State.Seek;
+                return;
+            }
+
+            // 3. Periodic path recalculation
+            if (m_PathfindTimer > m_PathfindTime)
+            {
+                m_PathfindTimer = 0;
+                NavMeshPath newPath = new NavMeshPath();
+                if (NavMesh.CalculatePath(transform.position, m_CurrentPowerUpTarget.position, ~0, newPath))
+                {
+                    m_CurrentPath = newPath;
+                    m_CurrentCorner = 1;
+                    m_IsMoving = true;
+                }
+                else
+                {
+                    m_CurrentPowerUpTarget = null;
+                    m_CurrentState = State.Seek;
+                    return;
+                }
+            }
+
+            // 4. Defensive opportunist shot if an enemy is in front of the AI
+            DefensiveShotCheck();
+        }
+
+        private void DefensiveShotCheck()
+        {
+            if (m_ShotCooldown > 0f || m_AllTanks == null || m_Shooting == null) return;
+
+            for (int i = 0; i < m_AllTanks.Length; i++)
+            {
+                var tank = m_AllTanks[i];
+                if (tank == null || tank == gameObject || !tank.activeInHierarchy) continue;
+
+                Vector3 toEnemy = tank.transform.position - transform.position;
+                toEnemy.y = 0;
+                float dist = toEnemy.magnitude;
+
+                if (dist < m_MaxShootingDistance)
+                {
+                    float dot = Vector3.Dot(transform.forward, toEnemy.normalized);
+                    if (dot > 0.95f)
+                    {
+                        if (!NavMesh.Raycast(transform.position, tank.transform.position, out var hit, ~0))
+                        {
+                            if (!m_Shooting.IsCharging)
+                            {
+                                m_Shooting.StartCharging();
+                            }
+                            else if (m_Shooting.CurrentChargeRatio > 0.4f)
+                            {
+                                m_Shooting.StopCharging();
+                                m_ShotCooldown = m_TimeBetweenShot;
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
     }
 }

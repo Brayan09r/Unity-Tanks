@@ -14,6 +14,9 @@ namespace Tanks.Complete
         [HideInInspector] public float m_ExplosionForce = 50f;                // The amount of force added to a tank at the centre of the explosion.
         [HideInInspector] public float m_ExplosionRadius = 5f;                // The maximum distance away from the explosion tanks can be and are still affected.
 
+        // Event triggered on explosion: position, radius, maxDamage (Observer pattern for decoupled systems like destructibles)
+        public static event System.Action<Vector3, float, float> OnShellExplosion;
+
 
         private void Start ()
         {
@@ -65,6 +68,9 @@ namespace Tanks.Complete
 
             // Trigger screen shake for impactful visceral feedback
             CameraControl.TriggerShake(0.45f, 0.25f);
+
+            // Notify decoupled subscribers (destructible boxes, traps, telemetry, etc.)
+            OnShellExplosion?.Invoke(transform.position, m_ExplosionRadius, m_MaxDamage);
 
             // Once the particles have finished, destroy the gameobject they are on.
             ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
