@@ -173,7 +173,7 @@ namespace Tanks.Complete
 
             int effectivePlayer = ControlIndex > 0 ? ControlIndex : m_PlayerNumber;
 
-            // Player 1: Key E (also Space)
+            // Player 1: Key E (also Space, Left Mouse Button)
             if (effectivePlayer == 1)
             {
                 if (Keyboard.current != null)
@@ -182,9 +182,15 @@ namespace Tanks.Complete
                     if (Keyboard.current.eKey.isPressed || Keyboard.current.spaceKey.isPressed) fireHeld = true;
                     if (Keyboard.current.eKey.wasReleasedThisFrame || Keyboard.current.spaceKey.wasReleasedThisFrame) fireUp = true;
                 }
-                if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space)) fireDown = true;
-                if (Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.Space)) fireHeld = true;
-                if (Input.GetKeyUp(KeyCode.E) || Input.GetKeyUp(KeyCode.Space)) fireUp = true;
+                if (Mouse.current != null)
+                {
+                    if (Mouse.current.leftButton.wasPressedThisFrame) fireDown = true;
+                    if (Mouse.current.leftButton.isPressed) fireHeld = true;
+                    if (Mouse.current.leftButton.wasReleasedThisFrame) fireUp = true;
+                }
+                if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) fireDown = true;
+                if (Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) fireHeld = true;
+                if (Input.GetKeyUp(KeyCode.E) || Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonUp(0)) fireUp = true;
             }
             // Player 2: Key O (also Enter)
             else if (effectivePlayer == 2)
