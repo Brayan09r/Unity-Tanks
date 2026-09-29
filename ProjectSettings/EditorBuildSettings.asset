@@ -8,6 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Tanks/Tutorial_Demo/Demo_Scenes/Demo_Game_Moon.unity
     guid: 7d48af2f9c7c14840abfc5e21827efaa
+  - enabled: 1
+    path: Assets/_Tanks/Tutorial_Demo/Demo_Scenes/Demo_Game_Desert.unity
+    guid: 37c9d2c08de91d04183fed69ef45a7bc
+  - enabled: 1
+    path: Assets/_Tanks/Tutorial_Demo/Demo_Scenes/Demo_Game_Jungle.unity
+    guid: 37961ba4d27bd46428d20c2ffe403dc3
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 7fb6c1c790fa04865b379a6e8ccd7e9c, type: 3}
   m_UseUCBPForAssetBundles: 0
