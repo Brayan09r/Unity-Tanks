@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.16788131, g: 0.21073465, b: 0.28993964, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -526,6 +526,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -559,6 +560,142 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &503408509
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 503408514}
+  - component: {fileID: 503408513}
+  - component: {fileID: 503408512}
+  - component: {fileID: 503408511}
+  - component: {fileID: 503408510}
+  m_Layer: 0
+  m_Name: '[Mejoras de Combate]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &503408510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503408509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16658dadc5795684d98e71f3bfbe447d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tanks.Complete.FloatingTextSpawner
+  m_Font: {fileID: 0}
+  m_FontSize: 14
+  m_HeightOffset: 1.6
+  m_RiseHeight: 1.3
+  m_Duration: 1.1
+  m_RenderOnTop: 1
+  m_LowDamageColor: {r: 1, g: 1, b: 1, a: 1}
+  m_MediumDamageColor: {r: 1, g: 0.8, b: 0.2, a: 1}
+  m_HighDamageColor: {r: 1, g: 0.25, b: 0.2, a: 1}
+  m_ShieldedColor: {r: 0.45, g: 0.85, b: 1, a: 1}
+  m_HealColor: {r: 0.35, g: 1, b: 0.45, a: 1}
+  m_MediumThreshold: 20
+  m_HighThreshold: 45
+  m_ShowHealing: 1
+  m_ShowDecimals: 0
+  m_PrewarmCount: 12
+--- !u!114 &503408511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503408509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2ea6e90ea1c1324290b6ffb633dbf94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tanks.Complete.MatchStatsPanel
+  m_PanelWidth: 1180
+  m_BottomMargin: 10
+  m_PanelScale: 0.8
+  m_SortingOrder: 60
+  m_Font: {fileID: 0}
+  m_BackgroundColor: {r: 0.05, g: 0.06, b: 0.09, a: 0.9}
+  m_AccentColor: {r: 1, g: 0.82, b: 0.4, a: 1}
+  m_HeaderTextColor: {r: 0.65, g: 0.7, b: 0.78, a: 1}
+  m_RowTextColor: {r: 0.95, g: 0.96, b: 0.98, a: 1}
+  m_RowColorA: {r: 1, g: 1, b: 1, a: 0.04}
+  m_RowColorB: {r: 1, g: 1, b: 1, a: 0.08}
+  m_MvpRowColor: {r: 1, g: 0.82, b: 0.4, a: 0.22}
+  m_FadeDuration: 0.35
+--- !u!114 &503408512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503408509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcf425bd52b64b54e849ed4adad40ddf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tanks.Complete.MatchStatsTracker
+  m_Weights:
+    DamagePoint: 1
+    KillPoints: 50
+    PowerUpPoints: 10
+    AccuracyPoint: 0.5
+  m_SummaryDelay: 0.25
+  m_LogSummaryToConsole: 1
+--- !u!114 &503408513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503408509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f7e7232ae9a1f40bc946c56de26b8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tanks.Complete.CombatTelemetry
+  m_AutoInstallObservers: 1
+  m_AutoInstallMineDropper: 1
+  m_MineSettings:
+    m_MinePrefab: {fileID: 0}
+    m_ExplosionFX: {fileID: 0}
+    m_Cooldown: 6
+    m_MaxActiveMines: 3
+    m_DropDistanceBehind: 1.8
+    m_ArmDelay: 1
+    m_MaxDamage: 60
+    m_ExplosionRadius: 4
+    m_ExplosionForce: 40
+    m_OwnerImmune: 1
+    m_MineLifeTime: 45
+    m_AIUsesMines: 1
+    m_AIDropRange: 7
+    m_AIDropChance: 0.35
+--- !u!4 &503408514
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503408509}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &720095030
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,6 +791,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -868,17 +1006,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 3
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
   m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!108 &947777467
 Light:
   m_ObjectHideFlags: 0
@@ -887,14 +1031,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 947777465}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 1
   m_Color: {r: 0.827451, g: 0.90588236, b: 0.6784314, a: 1}
   m_Intensity: 1.2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -1162,6 +1306,7 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!1 &1304999364
 GameObject:
   m_ObjectHideFlags: 0
@@ -1193,7 +1338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NumRoundsToWin: 3
   m_StartDelay: 3
-  m_EndDelay: 3
+  m_EndDelay: 6
   m_CameraControl: {fileID: 1771596988}
   m_Tank1Prefab: {fileID: 7273797243869566079, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
   m_Tank2Prefab: {fileID: 2259141219951711155, guid: 1e8ed6dfd612e4b4d9c8b4459c750afa, type: 3}
@@ -3684,6 +3829,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
   m_AgentTypeID: -1372625422
   m_CollectObjects: 0
   m_Size: {x: 10, y: 10, z: 10}
@@ -3730,7 +3876,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24328132, guid: 86a7353f2579d476fbaa7f161c2e5d00, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 8ce5d020a687c314891341b4126d1de2, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 8ce5d020a687c314891341b4126d1de2, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -3971,7 +4117,6 @@ MonoBehaviour:
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
-  m_Version: 2
   m_TaaSettings:
     m_Quality: 3
     m_FrameInfluence: 0.1
@@ -3979,6 +4124,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!224 &1393387280 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7096617438686371839, guid: dc1a67b1558962a48a9310e6a3c18eb8, type: 3}
@@ -4676,6 +4822,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1069824433548114386, guid: 328826c1fd47c3e4bb07a1dec3ec4c19, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -54.999992
+      objectReference: {fileID: 0}
     - target: {fileID: 1153571439048663268, guid: 328826c1fd47c3e4bb07a1dec3ec4c19, type: 3}
       propertyPath: m_GameManager
       value: 
@@ -4908,6 +5058,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6677711488664429395, guid: 328826c1fd47c3e4bb07a1dec3ec4c19, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -54.999992
+      objectReference: {fileID: 0}
     - target: {fileID: 6758197890344357781, guid: 328826c1fd47c3e4bb07a1dec3ec4c19, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -5059,3 +5213,4 @@ SceneRoots:
   - {fileID: 938171901}
   - {fileID: 1359195126}
   - {fileID: 1232432637}
+  - {fileID: 503408514}
